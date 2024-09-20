@@ -1,5 +1,13 @@
 #include "pa2m.h"
+#include "string.h"
 #include "src/lista.h"
+#include "src/pila.h"
+#include "src/cola.h"
+
+void destruir_nombres(void* nombre)
+{
+	free((char*)nombre);
+}
 
 void crearLista()
 {
@@ -49,13 +57,14 @@ void agregarElementosSimplesAlFinal()
 		}
 	}
 	pa2m_afirmar(lista_cantidad_elementos(lista) == 4, "Hay 4 elementos en la lista");
-	void *elemento;
+
+	double *elemento;
 	for (size_t i = 0; i < 4; i++) {
-		if (!lista_obtener_elemento(lista, i, &elemento)) {
+		if (!lista_obtener_elemento(lista, i, (void**)&elemento)) {
 			lista_destruir(lista);
 			return;
 		}
-		pa2m_afirmar(*(double*)elemento == decimales[i], "Posicion %li: %.1f <-> %.1f", i, *(double*)elemento, decimales[i]);
+		pa2m_afirmar(*elemento == decimales[i], "Posicion %li: %.1f <-> %.1f", i, *elemento, decimales[i]);
 	}
 
 	lista_destruir(lista);
@@ -75,6 +84,7 @@ void agregarElementosSimplesEnElMedio() // La prueba de NULL
 	lista_agregar_al_final(lista, &numeros[8]);
 	lista_agregar_elemento(lista, 5, &numeros[9]);
 	pa2m_afirmar(lista_cantidad_elementos(lista) == 10, "Se agregaron 10 elementos");
+
 	int* elemento;
 	for (size_t i = 0; i < 10; i ++) {
 		if (!lista_obtener_elemento(lista, i, (void**)&elemento)) {
@@ -86,24 +96,37 @@ void agregarElementosSimplesEnElMedio() // La prueba de NULL
 	lista_destruir(lista);
 }
 
-void agregarElementoConDestructorTodo()
+void agregarElemetosConMalloc()
 {	
 	Lista* lista = lista_crear();
-	char* nombre1 = "Juan";
-	char* nombre2 = "Brenda";
-	char* nombre3 = "Apa";
+	char* nombres_esperados[] = {"Juan", "Ernesto", "Juarez", "Lezama"};
 
-	lista_agregar_al_final(lista, nombre1);
-	lista_agregar_elemento(lista, 0, nombre2);
-	lista_agregar_al_final(lista, nombre3);
+	for (size_t i = 0; i < 4; i++) {
+		char* nombre = malloc(strlen(nombres_esperados[i])+1 * sizeof(char*));
+		if (!nombre) {
+			lista_destruir_todo(lista, destruir_nombres);
+			return;
+		}
+		strcpy(nombre, nombres_esperados[i]);
+		lista_agregar_al_final(lista, nombre);
+	}
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 4, "La lista agregó 3 nombres");
 
-	pa2m_afirmar(lista_cantidad_elementos(lista) == 3, "La lista agregó 3 nombres");
+	char* elemento;
+	for (size_t i = 0; i < 4; i++) {
+		if (!lista_obtener_elemento(lista, i, (void**)&elemento)) {
+			lista_destruir_todo(lista, destruir_nombres);
+			return;
+		}
+		pa2m_afirmar(strcmp(elemento, nombres_esperados[i]) == 0, "Posicion %li, %s <-> %s", i, elemento, nombres_esperados[i]);
+	}
 	
-	lista_destruir(lista);
+	lista_destruir_todo(lista, destruir_nombres);
 }
 
 int main()
 {
+	pa2m_nuevo_grupo("================== PREUBAS LISTA ==================");
 	pa2m_nuevo_grupo("Prueba crear lista");
 	crearLista();
 	
@@ -116,8 +139,12 @@ int main()
 	pa2m_nuevo_grupo("Prueba agregar en distintos lugares y comprobar lugares");
 	agregarElementosSimplesEnElMedio();
 
-	pa2m_nuevo_grupo("Agregando estructuras");
-	agregarElementoConDestructorTodo();
+	pa2m_nuevo_grupo("Agregando elementos usando malloc y la funcion destruir todo");
+	agregarElemetosConMalloc();
+
+	pa2m_nuevo_grupo("============= PREUBAS ITERADOR LISTA =============");
+	pa2m_nuevo_grupo("================== PREUBAS PILA ==================");
+	pa2m_nuevo_grupo("================== PREUBAS COLA ==================");
 
 	return pa2m_mostrar_reporte();
 }
