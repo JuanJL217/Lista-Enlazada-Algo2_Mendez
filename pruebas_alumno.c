@@ -9,13 +9,35 @@ void destruir_nombres(void* nombre)
 	free((char*)nombre);
 }
 
+int comparar_numeros(void* a, void* b)
+{	
+	if (*(int*)a > *(int*)b) {
+		return -1;
+	} else if(*(int*)a < *(int*)b) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+bool contar_numeros_iterando(void* a, void* ctx)
+{
+	*(int*)ctx =+ *(int*)a;
+	return true;
+}
+
 void crearLista()
 {
 	Lista* lista = lista_crear();
 	if(!lista) {
 		return;
 	}
+	int contador = 0;
+	int buscar = 10;
 	pa2m_afirmar(lista_cantidad_elementos(lista) == 0, "Crear una lista tiene 0 elementos");
+	pa2m_afirmar(lista_buscar_elemento(lista, (void*)&buscar, comparar_numeros) == NULL, "Buscar en una lista vacia apunta a NULL");
+	pa2m_afirmar(lista_iterar_elementos(lista, contar_numeros_iterando, (void*)&contador) == 0, "Lista vacia, no hay elementos para iterar, retorna 0");
+	pa2m_afirmar(lista_quitar_elemento(lista, 0, NULL) == false, "Lista vacia, no se puede quitar nada, retorna false");
 	lista_destruir(lista);
 }
 
@@ -40,7 +62,7 @@ void agregarElementosSimplesAlComienzo()
 			lista_destruir(lista);
 			return;
 		}
-		pa2m_afirmar(*(size_t*)elemento == resultado_esperado[i], "Posicion %li: %li <-> %li", i, *(size_t*)elemento, resultado_esperado[i]);
+		pa2m_afirmar(*(size_t*)elemento == resultado_esperado[i], "Posicion %li, obtenido: %li -> esperado: %li", i, *(size_t*)elemento, resultado_esperado[i]);
 	}
 
 	lista_destruir(lista);
@@ -64,7 +86,7 @@ void agregarElementosSimplesAlFinal()
 			lista_destruir(lista);
 			return;
 		}
-		pa2m_afirmar(*elemento == decimales[i], "Posicion %li: %.1f <-> %.1f", i, *elemento, decimales[i]);
+		pa2m_afirmar(*elemento == decimales[i], "Posicion %li, obtenido: %.1f -> esperado: %.1f", i, *elemento, decimales[i]);
 	}
 
 	lista_destruir(lista);
@@ -91,7 +113,7 @@ void agregarElementosSimplesEnElMedio() // La prueba de NULL
 			lista_destruir(lista);
 			return;
 		}
-		pa2m_afirmar(*elemento == lista_esperada[i], "Posicion %li: %d <-> %d", i, *elemento, lista_esperada[i]);
+		pa2m_afirmar(*elemento == lista_esperada[i], "Posicion %li, obtenido: %d -> esperado: %d", i, *elemento, lista_esperada[i]);
 	}
 	lista_destruir(lista);
 }
@@ -118,10 +140,25 @@ void agregarElemetosConMalloc()
 			lista_destruir_todo(lista, destruir_nombres);
 			return;
 		}
-		pa2m_afirmar(strcmp(elemento, nombres_esperados[i]) == 0, "Posicion %li, %s <-> %s", i, elemento, nombres_esperados[i]);
+		pa2m_afirmar(strcmp(elemento, nombres_esperados[i]) == 0, "Posicion %li, obtenido: %s -> esperado: %s", i, elemento, nombres_esperados[i]);
 	}
 	
 	lista_destruir_todo(lista, destruir_nombres);
+}
+
+void buscarElemento()
+{
+	Lista* lista = lista_crear();
+	int numeros[] = {1, 2, 5, 10, -9, 0, -1, -24, 9, -5};
+	for (size_t i = 0; i < 10; i++) {
+		lista_agregar_elemento(lista, 0, &numeros[i]);
+	}
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 10, "Hay 10 elementos en la lista");
+
+	int buscar = 5;
+	int* encontrado = (int*) lista_buscar_elemento(lista, (void*)&buscar, comparar_numeros);
+	pa2m_afirmar(buscar == *encontrado, "Elemento %d se encuentra en la lista", buscar);
+	lista_destruir(lista);
 }
 
 int main()
@@ -141,6 +178,9 @@ int main()
 
 	pa2m_nuevo_grupo("Agregando elementos usando malloc y la funcion destruir todo");
 	agregarElemetosConMalloc();
+
+	pa2m_nuevo_grupo("Prueba se buscan elementos en la lista comparando");
+	buscarElemento();
 
 	pa2m_nuevo_grupo("============= PREUBAS ITERADOR LISTA =============");
 	pa2m_nuevo_grupo("================== PREUBAS PILA ==================");

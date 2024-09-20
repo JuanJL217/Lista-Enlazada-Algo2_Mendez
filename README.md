@@ -62,3 +62,10 @@ vector_original = vector;
 
 ## Respuestas a las preguntas teóricas
 Incluír acá las respuestas a las preguntas del enunciado (si aplica).
+
+ - ¿Qué es una lista/pila/cola? Explicar con diagramas.
+ - Explica y analiza las diferencias de complejidad entre las implementaciones de lista simplemente enlazada, doblemente enlazada y vector dinámico para las operaciones:
+   - Insertar/obtener/eliminar al inicio
+   - Insertar/obtener/eliminar al final
+   - Insertar/obtener/eliminar al medio
+ - Explica la complejidad de las operaciones implementadas en tu trabajo para la pila y la cola.

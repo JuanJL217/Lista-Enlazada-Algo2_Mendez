@@ -1,6 +1,7 @@
 #include "lista.h"
 
-const size_t UNA_POSICION_MENOS = 1;
+const size_t UNA_POSICION_ANTES = 1;
+const size_t PRIMER_NODO = 0;
 
 typedef struct nodo {
     void* elemento;
@@ -77,7 +78,7 @@ bool lista_agregar_elemento(Lista* lista, size_t posicion, void* cosa)
         nuevo_nodo->siguiente = lista->primer_nodo;
         lista->primer_nodo = nuevo_nodo;
     } else {
-        nodo_lista* nodo_encontrado = buscar_nodo(lista->primer_nodo, posicion, UNA_POSICION_MENOS);
+        nodo_lista* nodo_encontrado = buscar_nodo(lista->primer_nodo, posicion, UNA_POSICION_ANTES);
         nuevo_nodo->siguiente = nodo_encontrado->siguiente;
         nodo_encontrado->siguiente = nuevo_nodo;
     }
@@ -103,18 +104,37 @@ bool lista_agregar_al_final(Lista* lista, void* cosa)
     return true;
 }
 
+size_t posicion_ultimo_nodo(Lista* lista)
+{
+    return lista->cantidad_elementos;
+}
+
 bool lista_quitar_elemento(Lista* lista, size_t posicion, void** elemento_quitado)
 {   
     if (!lista || posicion > lista->cantidad_elementos || lista_esta_vacia(lista)) {
         return false;
     }
-    if (lista_esta_vacia(lista)) {
-        return false;
-    }
-    nodo_lista* nodo_encontrado = buscar_nodo(lista->primer_nodo, posicion, 0);
+
+    nodo_lista* nodo_encontrado;
+    nodo_lista* nodo_anterior = NULL;
+
+    if (posicion == PRIMER_NODO) {
+        nodo_encontrado = lista->primer_nodo;
+        lista->primer_nodo = lista->primer_nodo->siguiente;
+    } else {
+        nodo_anterior = buscar_nodo(lista->primer_nodo, posicion, UNA_POSICION_ANTES);
+        } if (posicion == posicion_ultimo_nodo(lista)) {
+            nodo_encontrado = lista->ultimo_nodo;
+            lista->ultimo_nodo = nodo_anterior;
+        } else {
+            nodo_encontrado = nodo_anterior->siguiente;
+            nodo_anterior->siguiente = nodo_encontrado->siguiente;
+        }
+
     if (elemento_quitado){
         *elemento_quitado = nodo_encontrado->elemento;
     }
+
     free(nodo_encontrado);
     lista->cantidad_elementos--;
     return true;
@@ -128,7 +148,7 @@ void* lista_buscar_elemento(Lista* lista, void* buscado, int(*comparador)(void*,
 
     nodo_lista* nodo_actual = lista->primer_nodo;
     while(nodo_actual) {
-        if (comparador(buscado, nodo_actual) == 0) {
+        if (comparador(buscado, nodo_actual->elemento) == 0) {
             return nodo_actual->elemento;
         }
         nodo_actual = nodo_actual->siguiente;
