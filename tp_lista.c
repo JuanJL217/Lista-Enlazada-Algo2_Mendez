@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 	struct pokemon *encontrado = lista_buscar_elemento(
 		pokedex, &buscado, comparar_nombre_pokemon);
 
-	//struct pokemon *quitado;
-	//lista_quitar_elemento(pokedex, 1 , (void**)&quitado);
+	// struct pokemon *quitado;
+	// lista_quitar_elemento(pokedex, 1 , (void**)&quitado);
 
 	struct pokemon *en_posicion;
 	lista_obtener_elemento(pokedex, 1, (void **)&en_posicion);
