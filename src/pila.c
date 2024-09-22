@@ -25,11 +25,13 @@ Pila *pila_crear()
 void pila_destruir(Pila *pila)
 {
 	lista_destruir(pila->elementos);
+	free(pila);
 }
 
 void pila_destruir_todo(Pila *pila, void (*f)(void *))
 {
 	lista_destruir_todo(pila->elementos, f);
+	free(pila);
 }
 
 size_t pila_cantidad(Pila *pila)
@@ -58,7 +60,7 @@ void *pila_desapilar(Pila *pila)
 		       NULL;
 }
 
-bool pila_esta_vacia(Pila *pila)
+bool pila_esta_vacía(Pila *pila)
 {
 	return pila_cantidad(pila) == 0;
 }

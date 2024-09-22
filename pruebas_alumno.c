@@ -26,7 +26,9 @@ bool contar_numeros_iterando(void* a, void* ctx)
 	return true;
 }
 
-void crearLista()
+// ----- PRUEBAS LISTA -------
+
+void inicializarUnaLista()
 {
 	Lista* lista = lista_crear();
 	if(!lista) {
@@ -157,15 +159,37 @@ void buscarElemento()
 
 	int buscar = 5;
 	int* encontrado = (int*) lista_buscar_elemento(lista, (void*)&buscar, comparar_numeros);
-	pa2m_afirmar(buscar == *encontrado, "Elemento %d se encuentra en la lista", buscar);
+	pa2m_afirmar(buscar == *encontrado, "Elemento %buscado se encuentra en la lista, nos da el puntero del elemento almacenado en la lista");
+
+	buscar = 50;
+	encontrado = (int*) lista_buscar_elemento(lista, (void*)&buscar, comparar_numeros);
+	pa2m_afirmar(encontrado == NULL, "Si el elemento no se cuentra en la lista, devuelve NULL");
+
+	buscar = -5;
+	encontrado = (int*) lista_buscar_elemento(lista, (void*)&buscar, comparar_numeros);
+	pa2m_afirmar(buscar == *encontrado, "Si el elemento encontrado está en la última posicion, devuelve la direccion del elemento último");
 	lista_destruir(lista);
 }
+
+// ----- PRUEBAS PILA -------
+
+void inicializarUnaPila()
+{
+	Pila* pila = pila_crear();
+	pa2m_afirmar(pila_cantidad(pila) == 0, "Inicializar una Pila tiene 0 elemento");
+	pa2m_afirmar(pila_esta_vacía(pila) == true, "Pila vacia");
+	pa2m_afirmar(pila_desapilar(pila) == NULL, "Si no hay elementos, no puede sapilar nada");
+	pila_destruir(pila);
+}
+
+// ----- PRUEBAS COLA -------
+
 
 int main()
 {
 	pa2m_nuevo_grupo("================== PREUBAS LISTA ==================");
 	pa2m_nuevo_grupo("Prueba crear lista");
-	crearLista();
+	inicializarUnaLista();
 	
 	pa2m_nuevo_grupo("Prueba agregar elementos simples al comienzo y comprobar lugares");
 	agregarElementosSimplesAlComienzo();
@@ -183,7 +207,11 @@ int main()
 	buscarElemento();
 
 	pa2m_nuevo_grupo("============= PREUBAS ITERADOR LISTA =============");
+
 	pa2m_nuevo_grupo("================== PREUBAS PILA ==================");
+	pa2m_nuevo_grupo("Prueba crea Pila");
+	inicializarUnaPila();
+
 	pa2m_nuevo_grupo("================== PREUBAS COLA ==================");
 
 	return pa2m_mostrar_reporte();

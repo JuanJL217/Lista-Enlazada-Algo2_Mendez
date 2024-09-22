@@ -64,7 +64,6 @@ bool lista_agregar_elemento(Lista* lista, size_t posicion, void* cosa)
     if (!lista || posicion > lista->cantidad_elementos) {
         return false;
     }
-
     if (posicion == lista->cantidad_elementos) {
         return lista_agregar_al_final(lista, cosa);
     }
@@ -93,7 +92,6 @@ bool lista_agregar_al_final(Lista* lista, void* cosa)
     if (!nuevo_nodo) {
         return false;
     }
-
     if (lista_esta_vacia(lista)) {
         lista->primer_nodo = nuevo_nodo;
     } else {
@@ -114,14 +112,12 @@ bool lista_quitar_elemento(Lista* lista, size_t posicion, void** elemento_quitad
     if (!lista || posicion > lista->cantidad_elementos || lista_esta_vacia(lista)) {
         return false;
     }
-
     nodo_lista* nodo_encontrado;
     nodo_lista* nodo_anterior = NULL;
-
     if (posicion == PRIMER_NODO) {
         nodo_encontrado = lista->primer_nodo;
         lista->primer_nodo = lista->primer_nodo->siguiente;
-    } else {
+    } else { // No hice un else if () para buscar una sola vez el nodo anteior.
         nodo_anterior = buscar_nodo(lista->primer_nodo, posicion, UNA_POSICION_ANTES);
         } if (posicion == posicion_ultimo_nodo(lista)) {
             nodo_encontrado = lista->ultimo_nodo;
@@ -134,7 +130,6 @@ bool lista_quitar_elemento(Lista* lista, size_t posicion, void** elemento_quitad
     if (elemento_quitado){
         *elemento_quitado = nodo_encontrado->elemento;
     }
-
     free(nodo_encontrado);
     lista->cantidad_elementos--;
     return true;
@@ -170,7 +165,7 @@ bool lista_obtener_elemento(Lista* lista, size_t posicion, void** elemento_encon
 
 size_t lista_iterar_elementos(Lista* lista, bool (*f)(void*, void*), void* ctx)
 {
-    if (!lista || !f || lista->cantidad_elementos == 0 || lista_esta_vacia(lista)) {
+    if (!lista || !f || lista_esta_vacia(lista)) {
         return 0;
     }
 
@@ -219,7 +214,6 @@ void lista_destruir(Lista* lista)
 // ---------- Iterador Externo ------------
 
 struct lista_iterador {
-    Lista* lista;
     nodo_lista* nodo_actual;
 };
 
@@ -229,7 +223,6 @@ Lista_iterador* lista_iterador_crear(Lista *lista)
     if (!iterador) {
         return NULL;
     }
-    iterador->lista = lista;
     iterador->nodo_actual = lista->primer_nodo;
     return iterador;
 }
