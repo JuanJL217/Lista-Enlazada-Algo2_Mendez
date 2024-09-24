@@ -37,20 +37,19 @@ bool agregar_numero(const char *str, void *ctx)
 	return sscanf(str, "%d", (int *)ctx) == 1;
 }
 
-void destruir_pokemon(void* _pokemon)
+void destruir_pokemon(void *_pokemon)
 {
-	Pokemon* pokemon = _pokemon;
+	Pokemon *pokemon = _pokemon;
 	free(pokemon->nombre);
 	free(pokemon);
 }
 
-bool mostrar_pokemones(void* _pokemon, void* nada)
+bool mostrar_pokemones(void *_pokemon, void *nada)
 {
-	Pokemon* pokemon = _pokemon;
+	Pokemon *pokemon = _pokemon;
 	printf("%s\n", pokemon->nombre);
 	return true;
 }
-
 
 int comparar_nombre_pokemon(void *_p1, void *_p2)
 {
@@ -73,29 +72,36 @@ int main(int argc, char *argv[])
 		return -2;
 	}
 
-	Lista* lista_pokemones = lista_crear();
+	Lista *lista_pokemones = lista_crear();
 	if (!lista_pokemones) {
 		cerrar_archivo_csv(archivo_pokemones);
 		perror("No se pudo inicializar la lista para los pokemones");
 		return -3;
 	}
 
-	bool (*funciones[])(const char*, void*) = {agregar_nombre, agregar_tipo, agregar_numero, agregar_numero, agregar_numero};
-	
+	bool (*funciones[])(const char *,
+			    void *) = { agregar_nombre, agregar_tipo,
+					agregar_numero, agregar_numero,
+					agregar_numero };
+
 	Pokemon pokemon;
 	pokemon.nombre = NULL;
-	void *punteros[] = {&pokemon.nombre, &pokemon.tipo, &pokemon.fuerza, &pokemon.destreza, &pokemon.resistencia};
+	void *punteros[] = { &pokemon.nombre, &pokemon.tipo, &pokemon.fuerza,
+			     &pokemon.destreza, &pokemon.resistencia };
 
 	size_t lineas_leidas = 0;
 
 	while (leer_linea_csv(archivo_pokemones, 5, funciones, punteros) == 5) {
-		Pokemon* nueva_ubicacion_pokemon = malloc(sizeof(Pokemon));
+		Pokemon *nueva_ubicacion_pokemon = malloc(sizeof(Pokemon));
 		if (!nueva_ubicacion_pokemon) {
 			return -4;
 		}
 		*nueva_ubicacion_pokemon = pokemon;
-		if(!lista_agregar_al_final(lista_pokemones, (void*)nueva_ubicacion_pokemon)) {
-			fprintf(stderr, "Pokemon %s no se puede agregar correctamente a la lista\n", pokemon.nombre);
+		if (!lista_agregar_al_final(lista_pokemones,
+					    (void *)nueva_ubicacion_pokemon)) {
+			fprintf(stderr,
+				"Pokemon %s no se puede agregar correctamente a la lista\n",
+				pokemon.nombre);
 		}
 		lineas_leidas++;
 	}
@@ -106,7 +112,7 @@ int main(int argc, char *argv[])
 		lista_destruir_todo(lista_pokemones, destruir_pokemon);
 		fprintf(stderr, "ARchivo vacio\n");
 		return -4;
-	}	
+	}
 
 	lista_iterar_elementos(lista_pokemones, mostrar_pokemones, NULL);
 
