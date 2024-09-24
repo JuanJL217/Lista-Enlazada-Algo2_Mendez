@@ -66,7 +66,7 @@ vector_original = vector;
 
 Tanto la lista, pila y cola son Estructuras que almacenan datos, que tienen usos especificos, excepto por la lista, que puede funcionar como pila y cola, pero estas no pueden funcionar como lista.
 
-### 1) Pila:###  
+### 1) Pila:
 La Pila tiene la capacidad de "recordar" lo último que ingresaste, por ejemplo: Vamos ingresando los números `5, 2, 8, 10, 14, 6`. Lo que hace una Pila es que a medida que vayas ingresando elemento, el primero que ingresaste se va para el fondo de la Pila y siempre tendrás a disposición el último que agregaste, en nuestro ejemplo, cuando decidimos sacar un elemento, será el número 6, porque fue el último en ingresar a la Pila, luego tendrémos el 14, y así sucesivamente hasta obtener el último elemento, que seríá el número 5, que fue el primero que ingresamos a la Pila, entonces:`El último elemento en salir es el primer elemento que agregaste`.
 
 "ADJUNTAR IMAGEN"
