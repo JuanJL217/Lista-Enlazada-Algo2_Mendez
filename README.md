@@ -71,12 +71,12 @@ La Pila tiene la capacidad de "recordar" lo último que ingresaste, por ejemplo:
 
 "ADJUNTAR IMAGEN"
 
-2) Cola:
+### 2) Cola:
 A diferencia de la Pila, la manera de almacenar los datos es distinto, porque ya no sacas el último elemento que agregaste, ahora, `El primer elemento en salir es el primer que agregaste`. Con el mismo ejemplo , al agregar los números `5, 2, 8, 10, 14, 6`, cuando quieras dejar vacia la Cola, se quita primero el número 5, luego el 2 y así hasta llegar al último elemento que agregaste, siendo nuestro ejemplo, el 6.
 
 "ADJUNTAR IMAGEN"
 
-3) Lista:
+### 3) Lista:
 LA diferencia entre lo que es una lista con lo que es una Pila o una Cola, es la manera en como accedemos a los elementos. Como vimos, la manera de acceder a un elemento en estas 2 estructuras, depende de qué estructra estemos usando, si es una Pila, accedemos al elemento siendo este el último que agregamos; una Cola, al primer elemento. La manera en como una lista accede a sus elementos, es que podemos acceder a cualquier posicion, ya sea al inicio, al final o en medio. Y también una lista puede actuar como Lista y como Pila (dependdiente de cómo agregas y como sacas elementos).
 
 "ADJUNTAR IMAGEN"
