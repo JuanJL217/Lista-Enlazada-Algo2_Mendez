@@ -10,9 +10,9 @@ struct pila {
 Pila *pila_crear()
 {
 	Pila *pila = malloc(sizeof(Pila));
-	if (!pila) {
+	if (!pila)
 		return NULL;
-	}
+
 	Lista *lista = lista_crear();
 	if (!lista) {
 		free(pila);
@@ -24,23 +24,31 @@ Pila *pila_crear()
 
 void pila_destruir(Pila *pila)
 {
+	if (!pila)
+		return;
 	lista_destruir(pila->elementos);
 	free(pila);
 }
 
 void pila_destruir_todo(Pila *pila, void (*f)(void *))
 {
+	if (!pila)
+		return;
 	lista_destruir_todo(pila->elementos, f);
 	free(pila);
 }
 
 size_t pila_cantidad(Pila *pila)
 {
+	if (!pila)
+		return 0;
 	return lista_cantidad_elementos(pila->elementos);
 }
 
 void *pila_tope(Pila *pila)
 {
+	if (!pila)
+		return NULL;
 	void *tope;
 	return lista_obtener_elemento(pila->elementos, INICIO, &tope) ? tope :
 									NULL;
@@ -48,11 +56,15 @@ void *pila_tope(Pila *pila)
 
 bool pila_apilar(Pila *pila, void *cosa)
 {
+	if (!pila)
+		return false;
 	return lista_agregar_elemento(pila->elementos, INICIO, cosa);
 }
 
 void *pila_desapilar(Pila *pila)
 {
+	if (!pila)
+		return NULL;
 	void *elemento_desapilado;
 	return lista_quitar_elemento(pila->elementos, INICIO,
 				     &elemento_desapilado) ?
@@ -62,5 +74,7 @@ void *pila_desapilar(Pila *pila)
 
 bool pila_esta_vacía(Pila *pila)
 {
+	if (!pila)
+		return false;
 	return pila_cantidad(pila) == 0;
 }

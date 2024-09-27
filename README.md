@@ -119,3 +119,54 @@ Insertar/obtener/eliminar al medio:
 Aquí es distinto, insertar en el medio, porque, aunque sea directo darle la posicion donde quiero agegar, debo mover a la derecha para darle espacio a mi nuevo elemento. Obtener seria O(1), y eliminar sería O(n), ya que debo hacer que el lado derecho, vaya para la izquierda y "rellenar" ese bloque.
 
  ## Explica la complejidad de las operaciones implementadas en tu trabajo para la pila y la cola.
+
+Aquí, para ahorrar espacio, las operaciones para la Pila y Cola son casi las mismas, solo varian distintos parámetros para las funciones de la lista, ya que estamos reutilizando las funciones de Lista, por eso, todas las funciones dependerán de la Lista.
+
+### `pila_crear` y `cola_crear` O(1)
+Al ser una inicialización de las estructuras Pila/Cola es `O(1)`, también vamos a inicializar la estructura de Lista, lo cual conlleva a `malloc()` y asignaciones de punteros a NULL en la Lista y la cantidad de elementos inicializada en 0, cosa que todo es `O(1)`.
+
+```c
+struct pila {
+	Lista *elementos;
+};
+```
+
+### `pila_cantidad` y `cola_cantidad` O(1)
+Como llevamos un contador en la implementación de la estructura Lista, saber la cantidad de elementos es `O(1)`, porque no tenemos que recorrer la lista para saber cuántos elementos hay, eso sería `O(n)`.
+
+```c
+return lista_cantidad_elementos(cola->elementos);
+```
+
+### `pila_apilar` y `cola_encolar` O(1)
+La manera de agregar elementos, es distinto en cada caso. Para la Pila, agregar elemento siempre será al inicio de la lista, mientras que en la Cola, será al final. Tanto agregar al inicio como agregar al final son O(1), porque la estructura de Lista hay puntero a esos 2 nodos, por lo cual no tenemos que recorrer nada para poder almacenar en esos casos.
+
+```c
+struct lista {
+	struct nodo *primer_nodo;
+	struct nodo *ultimo_nodo;
+	size_t cantidad_elementos;
+};
+```
+### `pila_desapilar` y `cola_desencolar` O(1)
+Aquí explico por qué decidí que se apilen y encolen de distintas maneras. Para que la función de desapilar y enconlar sean `O(1)`, necesito que sea en un lugar donde sea al sin la necesidad de iterar. Uno pensaría que eliminar al final seríá factible, pero no lo es, porque una vez que sacamos el último nodo, debemos asignar un nuevo nodo, y como no sabemos qué hasya atrás de nosotros (por ser lsita simplementa enlazada), debemos iterar hasta encontrar ese nuevo último nodo (el nodo anterior al último que saqué), por esa razón, es que la única posición donde puedo hacer que sea `O(1)` es en la posicion 0, el inicio, porque una vez que quito ese nodo, asigno el nuevo inicio al siguiente nodo donde apunta. De eso, va a dependender cómo agrego los elementos para que sean una pila y una cola. En la cola agrego al inicio para que el primero en sacar sea el último que ingresé, y en la cola, al agregar por el final de la lista, siempre quitaré el primer elemento que ingresé a la lista. Cabe resaltar que la función de `lista_agregar_elemento` es `O(n)`, pero como siempre agregarémos en la primera posición, no hay otros casos posibles, por eso es que es `O(1)`, ya que aquí no se cuenta el peor de los casos (nunca cambia la posicion para agregar el elemento).
+
+```c
+#define INICIO 0;
+
+bool pila_apilar(Pila *pila, void *cosa)
+{
+	return lista_agregar_elemento(pila->elementos, INICIO, cosa);
+}
+```
+Nota: Pongo `define`, porque cuando hago `const size_t`, me aparecen errores, aunque le cambie de nombre en cola.c y pila.c
+
+
+### `pila_tope` y `cola_frente` O(1)
+Siguiendo con la lógica del punto anterior, cuando deseamos ver el tope o el frente, son los próximo elementos a salir, si es que decidimos retirarlos, por eso, la posicion es en el inicio, y como tenemos el puntero al inicio, visualizar el elemento es `O(1)`.
+
+### `pila_esta_vacia` y `cola_esta_vacia` O(1)
+Esta función verifique que, si la la estructura Lista tiene 0 elementos, significa que está vacía. Al ser un funciones lógicas, es `O(1)`.
+```c
+return cola_cantidad(cola) == 0;
+```

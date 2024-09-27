@@ -74,6 +74,10 @@ void agregarElementosSimplesAlComienzo()
 			     *(size_t *)elemento, resultado_esperado[i]);
 	}
 
+	pa2m_afirmar(
+		lista_obtener_elemento(lista, 0, NULL) == true,
+		"Pasar NULL como parametro me da true obtener el elemento");
+
 	lista_destruir(lista);
 }
 
@@ -112,7 +116,7 @@ void agregarElementosSimplesEnElMedio() // La prueba de NULL
 		-95, -5, -898, -3, 55, 42, 12, 434, 8, 10,
 	};
 	for (size_t i = 0; i < 5; i++) {
-		lista_agregar_elemento(lista, i, &numeros[i]);
+		lista_agregar_al_final(lista, &numeros[i]);
 	}
 	lista_agregar_elemento(lista, 0, &numeros[5]);
 	lista_agregar_elemento(lista, 3, &numeros[6]);
@@ -199,6 +203,40 @@ void buscarElemento()
 	lista_destruir(lista);
 }
 
+void eliminarElementos()
+{
+	Lista *lista = lista_crear();
+	int numero = 5;
+	lista_agregar_elemento(lista, 0, &numero);
+
+	int *elemento_quitado = NULL;
+
+	pa2m_afirmar(lista_quitar_elemento(lista, 10,
+					   (void **)&elemento_quitado) == false,
+		     "Quitar un elemento por fuera del rango, es falso");
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 1,
+		     "Hay 1 elemento en la lista");
+	pa2m_afirmar(lista_quitar_elemento(lista, 0,
+					   (void **)&elemento_quitado) == true,
+		     "Número %d eliminado de la lista", elemento_quitado);
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 0, "Lista vacia");
+	free(lista);
+}
+
+void eliminarPorElFinal()
+{
+	Lista *lista = lista_crear();
+	int numeros[] = { 1, 2, 5, 2, 8, 9, 4 };
+	for (size_t i = 0; i < 7; i++) {
+		lista_agregar_al_final(lista, &numeros[i]);
+	}
+
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 7,
+		     "Se agregaron 7 elementos");
+
+	lista_destruir(lista);
+}
+
 // ----- PRUEBAS PILA -------
 
 void inicializarUnaPila()
@@ -249,6 +287,12 @@ int main()
 
 	pa2m_nuevo_grupo("Prueba se buscan elementos en la lista comparando");
 	buscarElemento();
+
+	pa2m_nuevo_grupo("Pruebas eliminar elementos de la lista");
+	eliminarElementos();
+
+	pa2m_nuevo_grupo("Pruebas eliminando por el final");
+	eliminarPorElFinal();
 
 	pa2m_nuevo_grupo("============= PREUBAS ITERADOR LISTA =============");
 

@@ -11,24 +11,23 @@ typedef struct nodo {
 nodo_lista *nodo_crear(void *cosa)
 {
 	nodo_lista *nodo = malloc(sizeof(nodo_lista));
-	if (!nodo) {
+	if (!nodo)
 		return NULL;
-	}
 	nodo->elemento = cosa;
 	nodo->siguiente = NULL;
 	return nodo;
 }
 
-bool insertar_al_inicio(size_t posicion)
+bool se_agrega_al_inicio(size_t posicion)
 {
 	return posicion == 0;
 }
 
 nodo_lista *buscar_nodo(nodo_lista *nodo_actual, size_t posicion, size_t ajuste)
 {
-	for (size_t i = 0; i < posicion - ajuste; i++) {
+	for (size_t i = 0; i < posicion - ajuste; i++)
 		nodo_actual = nodo_actual->siguiente;
-	}
+
 	return nodo_actual;
 }
 
@@ -56,24 +55,33 @@ Lista *lista_crear()
 
 size_t lista_cantidad_elementos(Lista *lista)
 {
-	return lista->cantidad_elementos;
+	return (!lista) ? 0 : lista->cantidad_elementos;
+}
+
+bool posicion_fuera_del_rango(size_t posicion, size_t cantidad_elementos)
+{
+	return posicion > cantidad_elementos;
+}
+
+bool se_agrega_al_final(size_t posicion, size_t cantidad_elemento)
+{
+	return posicion == cantidad_elemento;
 }
 
 bool lista_agregar_elemento(Lista *lista, size_t posicion, void *cosa)
 {
-	if (!lista || posicion > lista->cantidad_elementos) {
+	if (!lista ||
+	    posicion_fuera_del_rango(posicion, lista->cantidad_elementos))
 		return false;
-	}
-	if (posicion == lista->cantidad_elementos) {
+
+	if (se_agrega_al_final(posicion, lista->cantidad_elementos))
 		return lista_agregar_al_final(lista, cosa);
-	}
 
 	nodo_lista *nuevo_nodo = nodo_crear(cosa);
-	if (!nuevo_nodo) {
+	if (!nuevo_nodo)
 		return false;
-	}
 
-	if (insertar_al_inicio(posicion)) {
+	if (se_agrega_al_inicio(posicion)) {
 		nuevo_nodo->siguiente = lista->primer_nodo;
 		lista->primer_nodo = nuevo_nodo;
 	} else {
@@ -89,15 +97,18 @@ bool lista_agregar_elemento(Lista *lista, size_t posicion, void *cosa)
 
 bool lista_agregar_al_final(Lista *lista, void *cosa)
 {
-	nodo_lista *nuevo_nodo = nodo_crear(cosa);
-	if (!nuevo_nodo) {
+	if (!lista)
 		return false;
-	}
-	if (lista_esta_vacia(lista)) {
+
+	nodo_lista *nuevo_nodo = nodo_crear(cosa);
+	if (!nuevo_nodo)
+		return false;
+
+	if (lista_esta_vacia(lista))
 		lista->primer_nodo = nuevo_nodo;
-	} else {
+	else
 		lista->ultimo_nodo->siguiente = nuevo_nodo;
-	}
+
 	lista->ultimo_nodo = nuevo_nodo;
 	lista->cantidad_elementos++;
 	return true;
@@ -105,36 +116,39 @@ bool lista_agregar_al_final(Lista *lista, void *cosa)
 
 size_t posicion_ultimo_nodo(Lista *lista)
 {
-	return lista->cantidad_elementos;
+	return lista->cantidad_elementos - 1;
 }
 
 bool lista_quitar_elemento(Lista *lista, size_t posicion,
 			   void **elemento_quitado)
 {
-	if (!lista || posicion > lista->cantidad_elementos ||
-	    lista_esta_vacia(lista)) {
+	if (!lista ||
+	    posicion_fuera_del_rango(posicion, lista->cantidad_elementos) ||
+	    lista_esta_vacia(lista))
 		return false;
-	}
+
 	nodo_lista *nodo_encontrado;
 	nodo_lista *nodo_anterior = NULL;
-	if (posicion == PRIMER_NODO) {
+
+	if (posicion == 0) {
 		nodo_encontrado = lista->primer_nodo;
 		lista->primer_nodo = lista->primer_nodo->siguiente;
-	} else { // No hice un else if () para buscar una sola vez el nodo anteior.
+		if (lista->cantidad_elementos == 1)
+			lista->ultimo_nodo = NULL;
+	} else {
 		nodo_anterior = buscar_nodo(lista->primer_nodo, posicion,
 					    UNA_POSICION_ANTES);
+		if (posicion == posicion_ultimo_nodo(lista)) {
+			nodo_encontrado = lista->ultimo_nodo;
+			lista->ultimo_nodo = nodo_anterior;
+			lista->ultimo_nodo->siguiente = NULL;
+		} else {
+			nodo_encontrado = nodo_anterior->siguiente;
+			nodo_anterior->siguiente = nodo_encontrado->siguiente;
+		}
 	}
-	if (posicion == posicion_ultimo_nodo(lista)) {
-		nodo_encontrado = lista->ultimo_nodo;
-		lista->ultimo_nodo = nodo_anterior;
-	} else {
-		nodo_encontrado = nodo_anterior->siguiente;
-		nodo_anterior->siguiente = nodo_encontrado->siguiente;
-	}
-
-	if (elemento_quitado) {
+	if (elemento_quitado)
 		*elemento_quitado = nodo_encontrado->elemento;
-	}
 	free(nodo_encontrado);
 	lista->cantidad_elementos--;
 	return true;
@@ -143,15 +157,15 @@ bool lista_quitar_elemento(Lista *lista, size_t posicion,
 void *lista_buscar_elemento(Lista *lista, void *buscado,
 			    int (*comparador)(void *, void *))
 {
-	if (!lista || !comparador || lista_esta_vacia(lista)) {
+	if (!lista || !comparador || lista_esta_vacia(lista))
 		return NULL;
-	}
 
+	int contador = 0;
 	nodo_lista *nodo_actual = lista->primer_nodo;
 	while (nodo_actual) {
-		if (comparador(buscado, nodo_actual->elemento) == 0) {
+		if (comparador(buscado, nodo_actual->elemento) == 0)
 			return nodo_actual->elemento;
-		}
+		contador++;
 		nodo_actual = nodo_actual->siguiente;
 	}
 
@@ -161,13 +175,15 @@ void *lista_buscar_elemento(Lista *lista, void *buscado,
 bool lista_obtener_elemento(Lista *lista, size_t posicion,
 			    void **elemento_encontrado)
 {
-	if (!lista || posicion > lista->cantidad_elementos ||
-	    lista_esta_vacia(lista)) {
+	if (!lista || posicion >= lista->cantidad_elementos ||
+	    lista_esta_vacia(lista))
 		return false;
-	}
+
 	nodo_lista *nodo_encontrado =
 		buscar_nodo(lista->primer_nodo, posicion, 0);
-	*elemento_encontrado = nodo_encontrado->elemento;
+
+	if (elemento_encontrado)
+		*elemento_encontrado = nodo_encontrado->elemento;
 
 	return true;
 }
@@ -196,13 +212,13 @@ size_t lista_iterar_elementos(Lista *lista, bool (*f)(void *, void *),
 
 void lista_destruir_todo(Lista *lista, void (*destructor)(void *))
 {
-	if (!lista || !destructor) {
+	if (!lista)
 		return;
-	}
 	nodo_lista *nodo_actual = lista->primer_nodo;
 	while (nodo_actual) {
 		nodo_lista *nodo_siguiente = nodo_actual->siguiente;
-		destructor(nodo_actual->elemento);
+		if (destructor)
+			destructor(nodo_actual->elemento);
 		free(nodo_actual);
 		nodo_actual = nodo_siguiente;
 	}
@@ -211,16 +227,9 @@ void lista_destruir_todo(Lista *lista, void (*destructor)(void *))
 
 void lista_destruir(Lista *lista)
 {
-	if (!lista) {
+	if (!lista)
 		return;
-	}
-	nodo_lista *nodo_actual = lista->primer_nodo;
-	while (nodo_actual) {
-		nodo_lista *nodo_siguiente = nodo_actual->siguiente;
-		free(nodo_actual);
-		nodo_actual = nodo_siguiente;
-	}
-	free(lista);
+	lista_destruir_todo(lista, NULL);
 }
 
 // ---------- Iterador Externo ------------
@@ -231,39 +240,44 @@ struct lista_iterador {
 
 Lista_iterador *lista_iterador_crear(Lista *lista)
 {
-	Lista_iterador *iterador = malloc(sizeof(Lista_iterador));
-	if (!iterador) {
+	if (!lista)
 		return NULL;
-	}
+
+	Lista_iterador *iterador = malloc(sizeof(Lista_iterador));
+	if (!iterador)
+		return NULL;
+
 	iterador->nodo_actual = lista->primer_nodo;
 	return iterador;
 }
 
 bool lista_iterador_hay_siguiente(Lista_iterador *iterador)
 {
-	if (!iterador) {
+	if (!iterador)
 		return false;
-	}
+
 	return iterador->nodo_actual != NULL;
 }
 
 void lista_iterador_avanzar(Lista_iterador *iterador)
 {
-	if (!iterador || !iterador->nodo_actual) {
+	if (!iterador || !iterador->nodo_actual)
 		return;
-	}
+
 	iterador->nodo_actual = iterador->nodo_actual->siguiente;
 }
 
 void *lista_iterador_obtener_elemento_actual(Lista_iterador *iterador)
 {
+	if (!iterador || !lista_iterador_hay_siguiente(iterador))
+		return NULL;
 	return iterador->nodo_actual->elemento;
 }
 
 void lista_iterador_destruir(Lista_iterador *iterador)
 {
-	if (!iterador) {
+	if (!iterador)
 		return;
-	}
+
 	free(iterador);
 }
