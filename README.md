@@ -4,7 +4,7 @@
 
 # TDA LISTA
 
-# ESTO ES UN TEMPLATE, COMPLETAR LO QUE HAGA FALTA, ELIMINAR LO QUE SOBRE (INCLUIDA ESTA LÍNEA)
+# IMPLEMENTACIÓN DE LISTA, PILA Y COLA, Y SU USO PARA LISTAR POKEMONES.
 
 ## Alumno: Juan Ernesto Juarez Lezama - 110418 - jjuarez@fi.uba.ar
 
@@ -53,8 +53,8 @@ En `texto_almacenado` almacenaremos cada caracter que sea ingresado por `stdin`,
 
 Tanto la lista, pila y cola son Estructuras que almacenan datos, ahora explicaré que es cada una y sus similitudes y diferencias.
 
-### 1) Pila:
-La Pila tiene la estructura de que, cuando agreguemos elementos, se van a ir apilando, pero cuando querramos sacar un elemento, siempre vamos a retirar el último que hayamos ingresado.  
+### 1) Pila:  
+La Pila tiene la estructura de que, cuando agreguemos elementos, se van a ir posicionando "uno encima del otro", pero cuando querramos sacar un elemento, siempre vamos a retirar el último que hayamos ingresado.  
 Ejemplo: Queremos ingresa en una Pila los numeros 5, 2, 8, 10, 14.
 La manera de ingresa primero sería el 5, luego le sigue el 2, luego el 8 ... hasta el 14. Entonces tendríamos nuestra pila con 5 elementos, como se muestra en la imagen:
 
@@ -68,17 +68,36 @@ La manera en la que quitaremos cada elemento, siempre será el último que ingre
 <img width="70%" src="img/pila_quitar_elementos.png">
 </div>
 
-### 2) Cola:
-A diferencia de la Pila, la manera de almacenar los datos es distinto, porque ya no sacas el último elemento que agregaste, ahora, `El primer elemento en salir es el primer que agregaste`. Con el mismo ejemplo , al agregar los números `5, 2, 8, 10, 14, 6`, cuando quieras dejar vacia la Cola, se quita primero el número 5, luego el 2 y así hasta llegar al último elemento que agregaste, siendo nuestro ejemplo, el 6.
+### 2) Cola:  
+La manera de ingresar elementos, es similar a la Pila, "uno encima del otro", aunque esto es subjetivo. Tomando el mismo ejemplo de números, al igual que la pila, vamos a estar ecolando primero el 5, luego el 2, ... hasta el 14:
 
-"ADJUNTAR IMAGEN"
+<div align="center">
+<img width="70%" src="img/cola_ingresar_elementos.png">
+</div>
+
+La manera en la que vaciaremos la cola, ya no será como antes, que sacabamos el último que ingresaba, ahora, el primero en salir, siempre será el primero elemento que ingresamos. Como sabemos, primero ingresamos el 5, entonces ese será el primero en salir, luego saldrá el 2 ... y así hasta que salga el 14 y la cola quede vacía.
+
+<div align="center">
+<img width="70%" src="img/cola_quitar_elementos.png">
+</div>
+
 
 ### 3) Lista:
-LA diferencia entre lo que es una lista con lo que es una Pila o una Cola, es la manera en como accedemos a los elementos. Como vimos, la manera de acceder a un elemento en estas 2 estructuras, depende de qué estructra estemos usando, si es una Pila, accedemos al elemento siendo este el último que agregamos; una Cola, al primer elemento. La manera en como una lista accede a sus elementos, es que podemos acceder a cualquier posicion, ya sea al inicio, al final o en medio. Y también una lista puede actuar como Lista y como Pila (dependdiente de cómo agregas y como sacas elementos).
+La lista, es un tipo de dato distinto, no hay una única manera de ingresar elemento, para la lista, se puede ingresar tanto al inicio, al final, y también en medio de la lista. Aquí usamos el concepto de posiciones. En la pila y cola no podemos acceder a alguna posición, que no sea sacando elementos. Con el mismo ejemplo de los números, siempre vamos a ingresar en el mismo orden, primero el 5, luego el 2 ... hasta el 14, pero la diferencia es que puede varias las posiciones en las que ingresarán los números:
 
-"ADJUNTAR IMAGEN"
+<div align="center">
+<img width="70%" src="img/lista_ingresar_elementos.png">
+</div>
 
- ## Explica y analiza las diferencias de complejidad entre las implementaciones de lista simplemente enlazada, doblemente enlazada y vector dinámico para las operaciones (mencionar que para mis complejidades, sabré la cantidad de elementos en las listas).
+Teniendo la lógica de que, se puede ingresar elementos en cualquier posición de la lista, también podemos sacar elementos de la lista y dejarla vacía, retirando elementos en cualquier posicion:
+
+<div align="center">
+<img width="70%" src="img/lista_quitar_elementos.png">
+</div>
+
+ ## Explica y analiza las diferencias de complejidad entre las implementaciones de lista simplemente enlazada, doblemente enlazada y vector dinámico para las operaciones  
+ 
+ Mencionar que para mis complejidades, sabré la cantidad de elementos en las listas:
 
  1) lista simplemente enlazada:
 Una lista simplemente enlazada, en su estructura interna de nodos, habrá solo una dirección para recorrer la lista. El caso general es cuando el direccionamiento de los nodos va de inicio a final.
