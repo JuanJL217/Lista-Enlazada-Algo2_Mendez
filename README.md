@@ -11,39 +11,39 @@
 - Para compilar:
 
 ```bash
-línea de compilación
+gcc -g tp_lista.c src/lista.c src/csv.c src/split.c -o tp_lista
 ```
 
 - Para ejecutar:
 
 ```bash
-línea de ejecución
+./tp_lista pokedex.csv
 ```
 
 - Para ejecutar con valgrind:
 ```bash
-línea con valgrind
+valgrind ./tp_lista pokedex.csv
 ```
 
 ---
 
 ##  Funcionamiento
 
-Explicación de cómo funcionan las estructuras desarrolladas en el TP y el funcionamiento general del mismo.
+Para este TP, aparte de usar una `Lista`, que es una estructura de datos, decidí crear una estructura llamada `Texto`, que almacenará, de forma dinamica, el texto ingresado por el usuario. Así no tengo un vector estático que puede almacenar hasta x caracteres y no romper el programa.
 
-Aclarar en esta parte todas las decisiones que se tomaron al realizar el TP, cosas que no se aclaren en el enunciado, fragmentos de código que necesiten explicación extra, etc.
-
-Incluír **EN TODOS LOS TPS** los diagramas relevantes al problema (mayormente diagramas de memoria para explicar las estructuras, pero se pueden utilizar otros diagramas si es necesario).
-
-### Por ejemplo:
-
-El programa funciona abriendo el archivo pasado como parámetro y leyendolo línea por línea. Por cada línea crea un registro e intenta agregarlo al vector. La función de lectura intenta leer todo el archivo o hasta encontrar el primer error. Devuelve un vector con todos los registros creados.
+```c
+typedef struct texto {
+	char* texto_almacenado;
+	size_t tamaño_del_texto;
+	size_t capacidad;
+} Texto;
+```
+En `texto_almacenado` almacenaremos cada caracter que sea ingresado por `stdin`, y vamos a colocarlo en cada posicion, y de eso dependerá `tamaño_del_texto`, ya que haciendo `texto_almacenado[tamaño_del_texto] = caracteres`, estamos dandole esa posicion, y al final de dar todos los caracteres, obtendremos la longitud total del texto.
 
 <div align="center">
-<img width="70%" src="img/diagrama1.svg">
+<img width="70%" src="img/estructura_texto.png">
 </div>
 
-En el archivo `sarasa.c` la función `funcion1` utiliza `realloc` para agrandar la zona de memoria utilizada para conquistar el mundo. El resultado de `realloc` lo guardo en una variable auxiliar para no perder el puntero original en caso de error:
 
 ```c
 int *vector = realloc(vector_original, (n+1)*sizeof(int));
@@ -67,9 +67,16 @@ vector_original = vector;
 Tanto la lista, pila y cola son Estructuras que almacenan datos, que tienen usos especificos, excepto por la lista, que puede funcionar como pila y cola, pero estas no pueden funcionar como lista.
 
 ### 1) Pila:
-La Pila tiene la capacidad de "recordar" lo último que ingresaste, por ejemplo: Vamos ingresando los números `5, 2, 8, 10, 14, 6`. Lo que hace una Pila es que a medida que vayas ingresando elemento, el primero que ingresaste se va para el fondo de la Pila y siempre tendrás a disposición el último que agregaste, en nuestro ejemplo, cuando decidimos sacar un elemento, será el número 6, porque fue el último en ingresar a la Pila, luego tendrémos el 14, y así sucesivamente hasta obtener el último elemento, que seríá el número 5, que fue el primero que ingresamos a la Pila, entonces:`El último elemento en salir es el primer elemento que agregaste`.
+La Pila está estructurado de tal manera que lo último que ingresaste, es el primero que sale.
+Ejemplo: 5, 2, 8, 10, 14, 6
 
-"ADJUNTAR IMAGEN"
+<div align="center">
+<img width="70%" src="img/pila_ingresar_elementos.png">
+</div>
+
+<div align="center">
+<img width="70%" src="img/pila_quitar_elementos.png">
+</div>
 
 ### 2) Cola:
 A diferencia de la Pila, la manera de almacenar los datos es distinto, porque ya no sacas el último elemento que agregaste, ahora, `El primer elemento en salir es el primer que agregaste`. Con el mismo ejemplo , al agregar los números `5, 2, 8, 10, 14, 6`, cuando quieras dejar vacia la Cola, se quita primero el número 5, luego el 2 y así hasta llegar al último elemento que agregaste, siendo nuestro ejemplo, el 6.
