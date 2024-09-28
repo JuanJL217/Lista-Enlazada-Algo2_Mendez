@@ -45,34 +45,24 @@ En `texto_almacenado` almacenaremos cada caracter que sea ingresado por `stdin`,
 </div>
 
 
-```c
-int *vector = realloc(vector_original, (n+1)*sizeof(int));
-
-if(vector == NULL)
-    return -1;
-vector_original = vector;
-```
-
-
-<div align="center">
-<img width="70%" src="img/diagrama2.svg">
-</div>
-
 ---
 
 ## Respuestas a las preguntas teóricas
 
 ## ¿Qué es una lista/pila/cola? Explicar con diagramas.
 
-Tanto la lista, pila y cola son Estructuras que almacenan datos, que tienen usos especificos, excepto por la lista, que puede funcionar como pila y cola, pero estas no pueden funcionar como lista.
+Tanto la lista, pila y cola son Estructuras que almacenan datos, ahora explicaré que es cada una y sus similitudes y diferencias.
 
 ### 1) Pila:
-La Pila está estructurado de tal manera que lo último que ingresaste, es el primero que sale.
-Ejemplo: 5, 2, 8, 10, 14, 6
+La Pila tiene la estructura de que, cuando agreguemos elementos, se van a ir apilando, pero cuando querramos sacar un elemento, siempre vamos a retirar el último que hayamos ingresado.  
+Ejemplo: Queremos ingresa en una Pila los numeros 5, 2, 8, 10, 14.
+La manera de ingresa primero sería el 5, luego le sigue el 2, luego el 8 ... hasta el 14. Entonces tendríamos nuestra pila con 5 elementos, como se muestra en la imagen:
 
 <div align="center">
 <img width="70%" src="img/pila_ingresar_elementos.png">
 </div>
+
+La manera en la que quitaremos cada elemento, siempre será el último que ingresamos. Como el número 14 fue el último que ingresamos, es el que está en el tope. Luego de sacar el 14, hay un nuevo tope, que es el número 10, entonces el próximo en salir es el 10, y así succesivamente hasta vaciar la pila.
 
 <div align="center">
 <img width="70%" src="img/pila_quitar_elementos.png">
