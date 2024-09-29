@@ -167,7 +167,7 @@ void buscar_pokemon(Lista* lista_pokemones)
 	texto_destruir(nombre_pokemon_buscar);
 }
 
-void lista_pokemones(Lista* lista_pokemones)
+void mostrar_pokemones(Lista* lista_pokemones)
 {
 	printf("\n");
 	size_t posicion = 1;

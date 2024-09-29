@@ -372,7 +372,62 @@ void listaNula()
 
 // ---------------- PRUEBAS ITERADOR EXTERNO ----------------
 
+void inicializarIteradorExternoConListaInicializada()
+{	
+	Lista* lista = lista_crear();
+	if (!lista)
+		return;
+	Lista_iterador* iterador = lista_iterador_crear(lista);
+	if (!iterador) {
+		lista_destruir(lista);
+		return;
+	}
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 0, "La lista tiene 0 elementos, está vacía");
+	pa2m_afirmar(lista_iterador_obtener_elemento_actual(iterador) == NULL, "No hay elementos en la lista, ver elemento actual retorna NULL");
+	pa2m_afirmar(lista_iterador_hay_siguiente(iterador) == false, "Lista vacía, hay siguiente retorna false, tampoco avanza");
+	lista_iterador_destruir(iterador);
+	lista_destruir_todo(lista, NULL);
+}
 
+void iteradorExternoConElementosEnLista()
+{
+	Lista* lista = lista_crear();
+	if (!lista)
+		return;
+	char* nombres[] = {"Juan", "Brenda", "Leonardo", "Celeste"};
+	for (size_t i = 0; i < 4; i++) {
+		if (!lista_agregar_al_final(lista, (void*)nombres[i])){
+			lista_destruir_todo(lista, NULL);
+		}
+	}
+	pa2m_afirmar(lista_cantidad_elementos(lista) == 4, "Hay 4 elementos en la lista");
+	Lista_iterador* iterador = lista_iterador_crear(lista);
+	if (!iterador) {
+		lista_destruir(lista);
+		return;
+	}
+	char* nombre_obtenido;
+	for (size_t i = 0; i < 4; i++) {
+		nombre_obtenido = (char*) lista_iterador_obtener_elemento_actual(iterador);
+		pa2m_afirmar(nombre_obtenido == nombres[i], "El elemeneto en la posicion %li, la dirección es: '%p', debe ser: '%p'", i, nombre_obtenido, nombres[i]);
+		pa2m_afirmar(lista_iterador_hay_siguiente(iterador) == true, "Hay siguiente elemento, avanza");
+		lista_iterador_avanzar(iterador);
+	}
+	nombre_obtenido = (char*) lista_iterador_obtener_elemento_actual(iterador);
+	pa2m_afirmar(lista_iterador_hay_siguiente(iterador) == false, "Ya no hay elemento siguiente");
+	pa2m_afirmar(nombre_obtenido == NULL, "Acabó de iterar todos los elementos de la lista, obtener elemento retorna NULL");
+	lista_iterador_destruir(iterador);
+	lista_destruir(lista);
+}
+
+void iteradorExternoNulo()
+{
+	Lista* lista = NULL;
+	Lista_iterador* iterador = lista_iterador_crear(lista);
+	pa2m_afirmar(iterador == NULL, "Pasar una lista nula, retorna NULL el iterador externo");
+	pa2m_afirmar(lista_iterador_hay_siguiente(iterador) == false, "Tener iterador nulo, hay siguiente retorna false");
+	pa2m_afirmar(lista_iterador_obtener_elemento_actual(iterador) == NULL, "Tener iterador nulo, obtener elemento actual retorna NULL");
+}
 
 // ---------------- PRUEBAS PILA ----------------
 
@@ -401,9 +456,9 @@ void apilarYDesapilarElementos()
 			return;
 		}
 	}
+	pa2m_afirmar(pila_esta_vacía(pila) == false, "La pila no se encuentra vacia");
 	pa2m_afirmar(pila_cantidad(pila) == 6,
 		     "Se agregaron 6 elementos a la pila");
-	pa2m_afirmar(pila_esta_vacía(pila) == false, "La pila no se encuentra vacia");
 
 	int *puntero;
 	for (int j = 5; j >= 0; j--) {
@@ -415,11 +470,11 @@ void apilarYDesapilarElementos()
 		puntero = (int*) pila_desapilar(pila);
 		pa2m_afirmar(
 			puntero == &numeros[j],
-			"Elemento desapilado tiene la direccion '%p' y debe ser '%p'",
+			"Elemento desapilado tiene la misma dirección que el tope recién visto",
 			puntero, &numeros[j]);
 	}
-	pa2m_afirmar(pila_tope(pila) == NULL, "No hay elementos, ver tope devuelve NULL");
 	pa2m_afirmar(pila_esta_vacía(pila) == true, "Pila vacia");
+	pa2m_afirmar(pila_tope(pila) == NULL, "No hay elementos, ver tope devuelve NULL");
 	pila_destruir(pila);
 }
 
@@ -442,7 +497,6 @@ void apilarDesapilarVariasVeces()
 
 	double* puntero;
 	for (size_t i = 0; i < 2; i++) {
-		//No veo el tope, por el test anterior
 		puntero = (double*) pila_desapilar(pila);
 		pa2m_afirmar(puntero == &decimales1[5-i], "Elemento desapilado tiene la dirección '%p' y debe ser '%p'", puntero, &decimales1[5-i]);
 	}	
@@ -497,22 +551,92 @@ void inicializandoUnaCola()
 	pa2m_afirmar(cola_desencolar(cola) == NULL,
 		     "Desencolar una cola vacia devuelve NULL");
 	pa2m_afirmar(cola_frente(cola) == NULL, "Al no tener elementos en la cola, ver el frente retorna NULL");
-	cola_destruir(cola);
+	cola_destruir_todo(cola, NULL);
 }
 
 void encolarYDesencolarElementos()
 {
-	return;
+	Cola *cola = cola_crear();
+	if (!cola)
+		return;
+	int numeros[] = { 1, 5, 9, 20, 1, 58 };
+	for (size_t i = 0; i < 6; i++) {
+		if (!cola_encolar(cola, (void *)&numeros[i])) {
+			cola_destruir(cola);
+			return;
+		}
+	}
+
+	pa2m_afirmar(cola_esta_vacía(cola) == false, "La cola no se encuentra vacia");
+	pa2m_afirmar(cola_cantidad(cola) == 6, "La Cola tiene 6 elementos");
+
+	int* puntero;
+	for (size_t i = 0; i < 6; i ++) {
+		puntero = (int*) cola_frente(cola);
+		pa2m_afirmar(puntero == &numeros[i], "Ver el frente de la cola tiene la dirección '%p' y debe ser '%p'", puntero, &numeros[i]);
+		puntero = (int*) cola_desencolar(cola);
+		pa2m_afirmar(puntero == &numeros[i], "Elemento desencolado tiene la misma direccion que el frente recién visto");
+	}
+
+	pa2m_afirmar(cola_cantidad(cola) == 0, "La cola se encuentra vacía");
+	pa2m_afirmar(cola_frente(cola) == NULL, "No hay elementos, ver frente devuelve NULL");
+
+	cola_destruir(cola);
 }
 
 void encolarDesencolarVariasVeces()
 {
-	return;
+	Cola* cola = cola_crear();
+	if (!cola) 
+		return;
+
+	double decimales1[] = {1.23, 34.1, 45.5, 09.4, 9.2, 12.9};
+	double decimales2[] = {4.6, 9.0, 3.6, 334.1, 111.11};
+
+	for (size_t i = 0; i < 6; i++) {
+		if(!cola_encolar(cola, (void*)&decimales1[i])) {
+			cola_destruir_todo(cola, NULL);
+		}
+	}
+	pa2m_afirmar(cola_cantidad(cola) == 6, "Hay 6 elementos en la cola");
+
+	double* elemento_desencolado;
+	for (size_t i = 0;i < 5; i++) {
+		elemento_desencolado = (double*) cola_desencolar(cola);
+		pa2m_afirmar(elemento_desencolado == &decimales1[i], "El elemento desencolado tiene dirección '%p' y debe ser '%p'", elemento_desencolado, &decimales1[i]);	
+	}
+	pa2m_afirmar(cola_cantidad(cola) == 1, "Hay un elemento en la cola");
+
+	for (size_t i = 0; i < 5; i++) {
+		if(!cola_encolar(cola, (void*)&decimales2[i])) {
+			cola_destruir_todo(cola, NULL);
+			return;
+		}
+	}
+	pa2m_afirmar(cola_cantidad(cola) == 6, "Se agregaron 5 elementos más a la cola, ahora hay 6 elementos");
+
+	for (size_t i = 0; i < 6; i++) {
+		elemento_desencolado = (double*) cola_desencolar(cola);
+		if (i < 1)
+			pa2m_afirmar(elemento_desencolado == &decimales1[5], "El elemento desencolado tiene dirección '%p', y debe ser '%p'", elemento_desencolado, &decimales1[5]);
+		else
+			pa2m_afirmar(elemento_desencolado == &decimales2[i-1], "El elemento desencolado tiene dirección '%p', y debe ser '%p'", elemento_desencolado, &decimales2[i-1]); 
+	}
+	pa2m_afirmar(cola_cantidad(cola) == 0, "Cola vacía");
+	pa2m_afirmar(cola_frente(cola) == NULL, "No hay elementos en la cola, ver el frente retorna NULL");
+
+	cola_destruir_todo(cola, NULL);
 }
 
 void colaNula()
 {
-	return;
+	char* nombre = "Ernesto";
+	Cola* cola = NULL;
+	pa2m_afirmar(cola_encolar(cola, (void*)&nombre) == false, "Tener una cola nula, encolar da false");
+	pa2m_afirmar(cola_desencolar(cola) == NULL, "Tener una cola nula, desencolar retorna NULL");
+	pa2m_afirmar(cola_cantidad(cola) == 0, "Tener una cola nula, la cantidad de elemenos es 0");
+	pa2m_afirmar(cola_esta_vacía(cola) == false, "Tener una cola nula, está vacio retorna false");
+	pa2m_afirmar(cola_frente(cola) == NULL, "Tener una cola nula, ver el frente retorna NULL");
 }
 
 int main()
@@ -543,13 +667,18 @@ int main()
 	eliminarPorElInicio();
 	pa2m_nuevo_grupo("Pruebas vaciar lista eliminando por el medio");
 	eliminarPorElMedio();
-	pa2m_nuevo_grupo("Pruebas iterador interno");
+	pa2m_nuevo_grupo("Prueba iterador interno itera todos los elementos");
 	iterarTodosLosElementos();
+	pa2m_nuevo_grupo("Prueba iterador interno itera hasta un corte");
 	verificarCorte();
 	pa2m_nuevo_grupo("Prueba lista nula");
 	listaNula();
 
 	pa2m_nuevo_grupo("============= PREUBAS ITERADOR EXTERNO LISTA =============");
+	pa2m_nuevo_grupo("Prueba iterador externo con una lista recién creada");
+	inicializarIteradorExternoConListaInicializada();
+	pa2m_nuevo_grupo("Prueba iterador externo con lista de elementos");
+	iteradorExternoConElementosEnLista();
 
 	pa2m_nuevo_grupo("================== PREUBAS PILA ==================");
 	pa2m_nuevo_grupo("Prueba crear Pila");

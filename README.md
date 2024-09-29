@@ -29,7 +29,35 @@ valgrind ./tp_lista pokedex.csv
 
 ##  Funcionamiento
 
-Para este TP, aparte de usar una `Lista`, que es una estructura de datos, decidí crear una estructura llamada `Texto`, que almacenará, de forma dinamica, el texto ingresado por el usuario. Así no tengo un vector estático que puede almacenar hasta x caracteres y no romper el programa.
+Para este TP, implementamos el TDA Lista. Esta estructura vivirá en el heap y sus elementos serán las direcciones originales que del valor que tengan las variables. Ejemplo: Digamos que tenemos un `int número = 5`, lo que la lista guardará, será la dirección de memeoria de número, o sea `&número`.
+
+<div align="center">
+<img width="70%" src="img/struct_lista_muestra.png">
+</div>
+
+El flujo del programa abrirá el archivo que se pase al ejecutar el programa, que en nuestro caso es el `pokedex.csv`. Luego se creará un una lista, la cual llamaremos `lista_pokemones`, la cuál almacenará los `struct pokemon`, dicha estructura estará creada en el heap, o sea, tendrémos las direcciones de memoria de los `malloc()`, y es bueno saber eso, porque debido a eso, no podemos hacer `free()` antes de tiempo, porque la lista, al tener direcciones de memoria originales, se deben liberar una vez que destruyamos la lista.
+
+La lista tiene este estilo al almacenar 3 pokemones:
+
+<div align="center">
+<img width="70%" src="img/lista_3_pokemones.png">
+</div>
+
+Como vemos en la imagen, casi todo vive en el heap, por eso, en la función destructura, aparte de liberar los nodos, debemos liberar tanto el nombre de cada pokemon, como la estructura `Pokemon`:
+
+```c
+void destruir_pokemones(void *_pokemon)
+{
+	Pokemon *pokemon = (Pokemon*)_pokemon;
+	free(pokemon->nombre);
+	free(pokemon);
+}
+
+
+lista_destruir_todo(lista_pokemones, destruir_pokemones);
+```
+
+Aparte de usar una `Lista`, que es una estructura de datos, decidí crear una estructura llamada `Texto`, que almacenará, de forma dinamica, el texto ingresado por el usuario. Así no tengo un vector estático que puede almacenar hasta x caracteres y no romper el programa.
 
 ```c
 typedef struct texto {
