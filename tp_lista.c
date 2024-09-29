@@ -6,6 +6,8 @@
 
 const size_t CAPACIDAD_INICIAL_TEXTO = 8;
 
+// ------------ ESTRUCTURAS -----------
+
 typedef struct pokemon {
 	char *nombre;
 	char tipo;
@@ -19,6 +21,8 @@ typedef struct texto {
 	size_t tamaño_del_texto;
 	size_t capacidad;
 } Texto;
+
+// -------------- FUNCIONES DE CSV --------------
 
 bool agregar_nombre(const char *str, void *ctx)
 {
@@ -45,7 +49,8 @@ bool agregar_numero(const char *str, void *ctx)
 	return sscanf(str, "%d", (int *)ctx) == 1;
 }
 
-bool leer_archivo_csv_y_agregar_poekmones(struct archivo_csv* archivo_pokemones, Lista* lista_pokemones)
+bool leer_archivo_csv_y_agregar_poekmones(struct archivo_csv *archivo_pokemones,
+					  Lista *lista_pokemones)
 {
 	bool (*funciones[])(const char *,
 			    void *) = { agregar_nombre, agregar_tipo,
@@ -81,6 +86,8 @@ bool leer_archivo_csv_y_agregar_poekmones(struct archivo_csv* archivo_pokemones,
 
 	return true;
 }
+
+// ------------- FUNCIONES PARA TEXTO --------------
 
 Texto *texto_crear()
 {
@@ -129,7 +136,7 @@ bool texto_agregar_caracter(Texto *texto, char caracter)
 	return true;
 }
 
-bool texto_agregar_lectura_finalizada(Texto* texto)
+bool texto_agregar_lectura_finalizada(Texto *texto)
 {
 	int caracter = getc(stdin);
 	while (caracter != '\n' && caracter != EOF) {
@@ -150,20 +157,24 @@ void texto_destruir(Texto *texto)
 	free(texto);
 }
 
+// ------------ FUNCIONES PARA LOS POKEMONES ------------
+
 void destruir_pokemones(void *_pokemon)
 {
-	Pokemon *pokemon = (Pokemon*)_pokemon;
+	Pokemon *pokemon = (Pokemon *)_pokemon;
 	free(pokemon->nombre);
 	free(pokemon);
 }
 
 int comparar_nombre_pokemon(void *_p1, void *_p2)
 {
-	Pokemon *p1 = (Pokemon*)_p1;
-	Pokemon *p2 = (Pokemon*)_p2;
+	Pokemon *p1 = (Pokemon *)_p1;
+	Pokemon *p2 = (Pokemon *)_p2;
 
 	return strcmp(p1->nombre, p2->nombre);
 }
+
+// -------------- FUNCIONES DE VISUALIZACIÓN -------------
 
 void mostrar_menu()
 {
@@ -175,40 +186,34 @@ void mostrar_menu()
 	printf("Opcion: ");
 }
 
-void mostrar_pokemon_encontrado(Pokemon* pokemon_encontrado)
+void mostrar_pokemon_encontrado(Pokemon *pokemon_encontrado)
 {
-	printf("- Datos del pokemon %s:\n",
-			pokemon_encontrado->nombre);
-	printf("   Tipo: %c\n",
-			pokemon_encontrado->tipo);
-	printf("   Fuerza: %d\n",
-			pokemon_encontrado->fuerza);
-	printf("   Destreza: %d\n",
-			pokemon_encontrado->destreza);
-	printf("   Resistencia: %d\n",
-			pokemon_encontrado->resistencia);
+	printf("- Datos del pokemon %s:\n", pokemon_encontrado->nombre);
+	printf("   Tipo: %c\n", pokemon_encontrado->tipo);
+	printf("   Fuerza: %d\n", pokemon_encontrado->fuerza);
+	printf("   Destreza: %d\n", pokemon_encontrado->destreza);
+	printf("   Resistencia: %d\n", pokemon_encontrado->resistencia);
 }
 
-bool buscar_pokemon(Lista* lista_pokemones)
+bool buscar_y_mostrar_datos_pokemon(Lista *lista_pokemones)
 {
 	printf("\n");
 	Texto *nombre_pokemon_buscar = texto_crear();
 	if (!nombre_pokemon_buscar) {
-		fprintf(stderr, "Error al asignar memoria para el texto del pokemon a buscar");
+		fprintf(stderr,
+			"Error al asignar memoria para el texto del pokemon a buscar");
 		return false;
 	}
 
-	if(!texto_agregar_lectura_finalizada(nombre_pokemon_buscar)) {
+	if (!texto_agregar_lectura_finalizada(nombre_pokemon_buscar)) {
 		texto_destruir(nombre_pokemon_buscar);
 		return false;
 	}
 
-	Pokemon *pokemon_encontrado =
-		(Pokemon *)lista_buscar_elemento(
-			lista_pokemones,
-			(void *)&nombre_pokemon_buscar
-				->texto_almacenado,
-			comparar_nombre_pokemon);
+	Pokemon *pokemon_encontrado = (Pokemon *)lista_buscar_elemento(
+		lista_pokemones,
+		(void *)&nombre_pokemon_buscar->texto_almacenado,
+		comparar_nombre_pokemon);
 	if (pokemon_encontrado) {
 		mostrar_pokemon_encontrado(pokemon_encontrado);
 	} else {
@@ -218,18 +223,16 @@ bool buscar_pokemon(Lista* lista_pokemones)
 	return true;
 }
 
-void mostrar_pokemones(Lista* lista_pokemones)
+void mostrar_pokemones(Lista *lista_pokemones)
 {
 	printf("\n");
 	size_t posicion = 1;
-	Lista_iterador *iterador =
-		lista_iterador_crear(lista_pokemones);
+	Lista_iterador *iterador = lista_iterador_crear(lista_pokemones);
 	while (lista_iterador_hay_siguiente(iterador)) {
-		Pokemon *pokemon_actual = (Pokemon *)
-			lista_iterador_obtener_elemento_actual(
+		Pokemon *pokemon_actual =
+			(Pokemon *)lista_iterador_obtener_elemento_actual(
 				iterador);
-		printf("%li) %s\n", posicion,
-				pokemon_actual->nombre);
+		printf("%li) %s\n", posicion, pokemon_actual->nombre);
 		posicion++;
 		lista_iterador_avanzar(iterador);
 	}
@@ -256,7 +259,8 @@ int main(int argc, char *argv[])
 		return -3;
 	}
 
-	if (!leer_archivo_csv_y_agregar_poekmones(archivo_pokemones, lista_pokemones)){
+	if (!leer_archivo_csv_y_agregar_poekmones(archivo_pokemones,
+						  lista_pokemones)) {
 		cerrar_archivo_csv(archivo_pokemones);
 		lista_destruir_todo(lista_pokemones, destruir_pokemones);
 		return -4;
@@ -267,22 +271,26 @@ int main(int argc, char *argv[])
 
 	while (seguir) {
 		mostrar_menu();
-		Texto* texto = texto_crear();
+		Texto *texto = texto_crear();
 		if (!texto) {
-			lista_destruir_todo(lista_pokemones, destruir_pokemones);
-			fprintf(stderr, "Error al asignar memoria para la estructura Texto");
+			lista_destruir_todo(lista_pokemones,
+					    destruir_pokemones);
+			fprintf(stderr,
+				"Error al asignar memoria para la estructura Texto");
 			return -5;
 		}
 
-		if(!texto_agregar_lectura_finalizada(texto)) {
-			lista_destruir_todo(lista_pokemones, destruir_pokemones);
+		if (!texto_agregar_lectura_finalizada(texto)) {
+			lista_destruir_todo(lista_pokemones,
+					    destruir_pokemones);
 			texto_destruir(texto);
 			return -6;
 		}
 
 		if (strcmp(texto->texto_almacenado, "1") == 0) {
-			if (!buscar_pokemon(lista_pokemones)){
-				lista_destruir_todo(lista_pokemones, destruir_pokemones);
+			if (!buscar_y_mostrar_datos_pokemon(lista_pokemones)) {
+				lista_destruir_todo(lista_pokemones,
+						    destruir_pokemones);
 				texto_destruir(texto);
 				return -7;
 			}

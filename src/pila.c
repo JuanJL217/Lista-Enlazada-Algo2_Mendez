@@ -1,7 +1,7 @@
 #include "pila.h"
 #include "lista.h"
 
-#define INICIO 0
+const size_t INICIO_PILA = 0;
 
 struct pila {
 	Lista *elementos;
@@ -50,15 +50,16 @@ void *pila_tope(Pila *pila)
 	if (!pila)
 		return NULL;
 	void *tope;
-	return lista_obtener_elemento(pila->elementos, INICIO, &tope) ? tope :
-									NULL;
+	return lista_obtener_elemento(pila->elementos, INICIO_PILA, &tope) ?
+		       tope :
+		       NULL;
 }
 
 bool pila_apilar(Pila *pila, void *cosa)
 {
 	if (!pila)
 		return false;
-	return lista_agregar_elemento(pila->elementos, INICIO, cosa);
+	return lista_agregar_elemento(pila->elementos, INICIO_PILA, cosa);
 }
 
 void *pila_desapilar(Pila *pila)
@@ -66,7 +67,7 @@ void *pila_desapilar(Pila *pila)
 	if (!pila)
 		return NULL;
 	void *elemento_desapilado;
-	return lista_quitar_elemento(pila->elementos, INICIO,
+	return lista_quitar_elemento(pila->elementos, INICIO_PILA,
 				     &elemento_desapilado) ?
 		       elemento_desapilado :
 		       NULL;

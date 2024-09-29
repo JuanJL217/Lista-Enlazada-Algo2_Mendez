@@ -3,6 +3,14 @@
 const size_t UNA_POSICION_ANTES = 1;
 const size_t PRIMER_NODO = 0;
 
+struct lista {
+	struct nodo *primer_nodo;
+	struct nodo *ultimo_nodo;
+	size_t cantidad_elementos;
+};
+
+// -------------- ESTRUCTURA Y FUNCIONES DE NODO --------------
+
 typedef struct nodo {
 	void *elemento;
 	struct nodo *siguiente;
@@ -18,11 +26,6 @@ nodo_lista *nodo_crear(void *cosa)
 	return nodo;
 }
 
-bool se_agrega_al_inicio(size_t posicion)
-{
-	return posicion == 0;
-}
-
 nodo_lista *buscar_nodo(nodo_lista *nodo_actual, size_t posicion, size_t ajuste)
 {
 	for (size_t i = 0; i < posicion - ajuste; i++)
@@ -31,18 +34,34 @@ nodo_lista *buscar_nodo(nodo_lista *nodo_actual, size_t posicion, size_t ajuste)
 	return nodo_actual;
 }
 
-// --------- FUNCIONES PRINCIPALES -------
+// -------------- FUNCIONES AUXILIARES --------------
 
-struct lista {
-	struct nodo *primer_nodo;
-	struct nodo *ultimo_nodo;
-	size_t cantidad_elementos;
-};
+bool es_el_inicio(size_t posicion)
+{
+	return posicion == 0;
+}
 
 bool lista_esta_vacia(Lista *lista)
 {
 	return lista->cantidad_elementos == 0;
 }
+
+bool posicion_fuera_del_rango(size_t posicion, size_t cantidad_elementos)
+{
+	return posicion > cantidad_elementos;
+}
+
+bool es_el_final(size_t posicion, size_t cantidad_elemento)
+{
+	return posicion == cantidad_elemento;
+}
+
+size_t posicion_ultimo_nodo(Lista *lista)
+{
+	return lista->cantidad_elementos - 1;
+}
+
+// -------------- LISTA --------------
 
 Lista *lista_crear()
 {
@@ -58,30 +77,20 @@ size_t lista_cantidad_elementos(Lista *lista)
 	return (!lista) ? 0 : lista->cantidad_elementos;
 }
 
-bool posicion_fuera_del_rango(size_t posicion, size_t cantidad_elementos)
-{
-	return posicion > cantidad_elementos;
-}
-
-bool se_agrega_al_final(size_t posicion, size_t cantidad_elemento)
-{
-	return posicion == cantidad_elemento;
-}
-
 bool lista_agregar_elemento(Lista *lista, size_t posicion, void *cosa)
 {
 	if (!lista ||
 	    posicion_fuera_del_rango(posicion, lista->cantidad_elementos))
 		return false;
 
-	if (se_agrega_al_final(posicion, lista->cantidad_elementos))
+	if (es_el_final(posicion, lista->cantidad_elementos))
 		return lista_agregar_al_final(lista, cosa);
 
 	nodo_lista *nuevo_nodo = nodo_crear(cosa);
 	if (!nuevo_nodo)
 		return false;
 
-	if (se_agrega_al_inicio(posicion)) {
+	if (es_el_inicio(posicion)) {
 		nuevo_nodo->siguiente = lista->primer_nodo;
 		lista->primer_nodo = nuevo_nodo;
 	} else {
@@ -114,11 +123,6 @@ bool lista_agregar_al_final(Lista *lista, void *cosa)
 	return true;
 }
 
-size_t posicion_ultimo_nodo(Lista *lista)
-{
-	return lista->cantidad_elementos - 1;
-}
-
 bool lista_quitar_elemento(Lista *lista, size_t posicion,
 			   void **elemento_quitado)
 {
@@ -130,7 +134,7 @@ bool lista_quitar_elemento(Lista *lista, size_t posicion,
 	nodo_lista *nodo_encontrado;
 	nodo_lista *nodo_anterior = NULL;
 
-	if (posicion == 0) {
+	if (es_el_inicio(posicion)) {
 		nodo_encontrado = lista->primer_nodo;
 		lista->primer_nodo = lista->primer_nodo->siguiente;
 		if (lista->cantidad_elementos == 1)
@@ -149,6 +153,7 @@ bool lista_quitar_elemento(Lista *lista, size_t posicion,
 	}
 	if (elemento_quitado)
 		*elemento_quitado = nodo_encontrado->elemento;
+
 	free(nodo_encontrado);
 	lista->cantidad_elementos--;
 	return true;
@@ -232,7 +237,7 @@ void lista_destruir(Lista *lista)
 	lista_destruir_todo(lista, NULL);
 }
 
-// ---------- Iterador Externo ------------
+// -------------- Iterador Externo --------------
 
 struct lista_iterador {
 	nodo_lista *nodo_actual;

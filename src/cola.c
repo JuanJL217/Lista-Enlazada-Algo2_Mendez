@@ -1,7 +1,7 @@
 #include "cola.h"
 #include "lista.h"
 
-#define INICIO 0
+const size_t INICIO_COLA = 0;
 
 struct cola {
 	Lista *elementos;
@@ -50,7 +50,7 @@ void *cola_frente(Cola *cola)
 	if (!cola)
 		return NULL;
 	void *frente;
-	return lista_obtener_elemento(cola->elementos, INICIO, &frente) ?
+	return lista_obtener_elemento(cola->elementos, INICIO_COLA, &frente) ?
 		       frente :
 		       NULL;
 }
@@ -67,7 +67,7 @@ void *cola_desencolar(Cola *cola)
 	if (!cola)
 		return NULL;
 	void *elemento_desencolado;
-	return lista_quitar_elemento(cola->elementos, INICIO,
+	return lista_quitar_elemento(cola->elementos, INICIO_COLA,
 				     &elemento_desencolado) ?
 		       elemento_desencolado :
 		       NULL;

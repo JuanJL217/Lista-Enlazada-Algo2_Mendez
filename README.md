@@ -83,7 +83,7 @@ Tanto la lista, pila y cola son Estructuras que almacenan datos, ahora explicar�
 
 ### 1) Pila:  
 La Pila tiene la estructura de que, cuando agreguemos elementos, se van a ir posicionando "uno encima del otro", pero cuando querramos sacar un elemento, siempre vamos a retirar el último que hayamos ingresado.  
-Ejemplo: Queremos ingresa en una Pila los numeros 5, 2, 8, 10, 14.
+Ejemplo: Queremos ingresa en una Pila los números 5, 2, 8, 10, 14.
 La manera de ingresa primero sería el 5, luego le sigue el 2, luego el 8 ... hasta el 14. Entonces tendríamos nuestra pila con 5 elementos, como se muestra en la imagen:
 
 <div align="center">
@@ -126,40 +126,40 @@ Teniendo la lógica de que, se puede ingresar elementos en cualquier posición d
  ## Explica y analiza las diferencias de complejidad entre las implementaciones de lista simplemente enlazada, doblemente enlazada y vector dinámico para las operaciones  
 
 ### 1) lista simplemente enlazada:  
-Una lista simplemente enlazada, en su estructura interna de nodos, habrá solo una dirección para recorrer la lista. El caso general es cuando el direccionamiento de los nodos va de inicio a final.
+`Una lista simplemente enlazada,` en su estructura interna de nodos, habrá solo una dirección para recorrer la lista. El caso general es cuando el direccionamiento de los nodos va de inicio a final.
 
-`Insertar/obtener/eliminar al inicio:`  
+` -Insertar/obtener/eliminar al inicio:`  
 Insertar un elemento al inicio: cuando es la inicio, siempre será O(1), ya que es instantaneo, no hay que recorrer ningún elemento, siendo esta lógica, obtener y eliminar también serán O(1), (siendo que al eliminar el inicio, su nuevo inicio será el siguiente, el cual ya apunta).
 
-`Insertar/obtener/eliminar al final:`  
-Insertar un elemento al final, dependiendo como sea la estructura de la lista, puede ser O(1) si es que tenemos un puntero que apunte al final de la lista, caso contrario O(n), porque recorrerá toda la lista, para poder encontrar el final. Obtener elemento seguirá la misma lógica que insertar al final, si ya sé donde acaba, es O(1), si no, O(n). En el caso de eliminar elemento, en cualquiera de las 2 opciones, siempre será O(n), porque: Si sabemos donde acaba el final, lo eliminamos, pero debemos saber cuál es el elemento anterior al final, y como no sabemos cuál es (ya que los nodos solo apuntan en una dirección), debemos iterar hasta encontrar el penúltimo nodo (debemos iterar hasta encontrar ese nodo conociendo la cantidad de elementos) antes de eliminar el último y lo mismo sería si no sabemos el puntero al final, ya que, como no nos importa que haya un final (puntero), entonces es ir recorriendo la lista, llegar al final y eliminarlo.  
+` -Insertar/obtener/eliminar al final:`  
+`Insertar un elemento` al final, dependiendo como sea la estructura de la lista, puede ser `O(1)` si es que tenemos un puntero que apunte al final de la lista, caso contrario `O(n)`, porque recorrerá toda la lista, para poder encontrar el final. `Obtener elemento` seguirá la misma lógica que insertar al final, si ya sé donde acaba, es `O(1)`, si no, `O(n)`. En el caso de `eliminar elemento`, en cualquiera de las 2 opciones, siempre será O(n), porque: Si sabemos donde acaba el final, lo eliminamos, pero debemos saber cuál es el elemento anterior al final, y como no sabemos cuál es (ya que los nodos solo apuntan en una dirección), debemos iterar hasta encontrar el penúltimo nodo (debemos iterar hasta encontrar ese nodo conociendo la cantidad de elementos) antes de eliminar el último y lo mismo sería si no sabemos el puntero al final, ya que, como no sabemos donde está el final (puntero), entonces es ir recorriendo la lista, llegar al final y eliminarlo.  
 
-`Insertar/obtener/eliminar al medio:`  
-Insertar al medio: Con cualquiera de las 2 posibles estructuras de una lista, conociendo el puntero al final d ela lista, la manera de agregar, buscar y eliminar un elemento, será O(n), porque vamos a tener que recorrer la lista.  
+` -Insertar/obtener/eliminar al medio:`  
+Insertar al medio, con cualquiera de las 2 posibles estructuras de una lista, conociendo el puntero al final de la lista, la manera de `agregar`, `buscar` y `eliminar` un elemento, será `O(n)`, porque vamos a tener que recorrer la lista.  
 
 ### 2) Lista doblemente enlazada:  
 En esta implementación, cada nodo tendrá doble direccionamiento, tanto al siguiente nodo como al nodo anterior.  
 
-`Insertar/obtener/eliminar al inicio:`  
-Siguiendo la mismoa lógica de la estructura anterior todo eso es O(1), ya que no hay que ir a buscar nada.  
+` -Insertar/obtener/eliminar al inicio:`  
+Siguiendo la mismoa lógica de la estructura anterior todo eso es `O(1)`, ya que no hay que ir a buscar nada.  
 
-`Insertar/obtener/eliminar al final:`  
-Aquí sí cambia con el anterior, primero mencionar que insertar sigue siendo O(1) al igual que obtener, pero eliminar, ya no es O(n), porque al ser doblemente enlazada, tenemos direccion al nodo anteior, entonces no tenemos que iterar.  
+` -Insertar/obtener/eliminar al final:`  
+Aquí sí cambia con el anterior, primero mencionar que `insertar` sigue siendo `O(1)` al igual que `obtener`, pero `eliminar`, ya no es `O(n)`, porque al ser doblemente enlazada, tenemos direccion al nodo anteior, entonces no tenemos que iterar, por lo que lo convierten en `O(1)`.  
 
-`Insertar/obtener/eliminar al medio:`  
-Insertar, buscar y eliminar al medio, siguen siendo O(n), ya que debemos iterar.  
+` -Insertar/obtener/eliminar al medio:`  
+`Insertar`, `buscar` y `eliminar` al medio, siguen siendo `O(n)`, ya que debemos iterar.  
 
 ### 3) Vector dinámico:  
-Al ser un vector, tiene memoria contigua, sabremos las posiciones, aparte de saber la cantidad de elementos, en esta estructura, deseo decir que, aparte de conocer la cantidad de elementos, tambien deseo saber donde inicia mi vector.  
+Al ser un vector, tiene memoria contigua, sabremos las posiciones, aparte de saber la cantidad de elementos, en esta estructura, deseo decir que, aparte de conocer la cantidad de elementos, tambien deseo saber donde inicia mi vector.
 
-`Insertar/obtener/eliminar al inicio:`
-Insertar ya no es O(1) como en la simplementa o doblemente enlazada, esta vez, el primero elemento debe ser el primer bloque del vector, entonces para posicionar el inicio, debo mandar a la derecha y seder el espacio para el nuevo elemento, tanto eliminar y obtener serían O(1), ya que solo me basta con tener una lógica interna que, cuando borre el el primero, el usuario ingrese la posicion [0], seria darle lo que está en la posicion [1] (lo cual es O(1)), ignora la posicion [0], ya que, aunque está el elemento en el vector, el usuario ya lo eliminó.  
+` -Insertar/obtener/eliminar al inicio:`
+`Insertar` ya no es `O(1)` como en la simplemente o doblemente enlazada, esta vez, el primero elemento debe ser el primer bloque del vector, entonces para posicionar el inicio, debo mandar a la derecha y seder el espacio para el nuevo elemento, tanto `eliminar` y `obtener` serán `O(1)`, ya que solo me basta con tener una lógica interna que, cuando borre el el primero, el usuario quiera ingresar la `posicion [0]`, seria darle lo que está en la `posicion [1]` (lo cual es `O(1)`), ignora la `posicion [0]`, ya que, aunque está el elemento en el vector, el usuario lo eliminó y ya no tiene acceso a ese bloque.
 
-`Insertar/obtener/eliminar al final:`  
-Insertar al final es O(1), ya que sabemos la cantidad de elementos, al igual que obtener es O(1). Eliminar también es O(1), porque no le damos acceso a ese elemento, aunque esté en el vector, insertar es O(1), ya que reemplazamos aquellos que borramos, y siempre que agregamos, no tenemos que mover nada a ningún lado, no como insertar al inicio, ya que, si no habia lugar a "izquierda" (en direccion al inicio), se demen mover los elementos.  
+` -Insertar/obtener/eliminar al final:`  
+Ya que sabemos la cantidad de elementos, `obtener` es `O(1)`. `Eliminar` también es `O(1)`, sería no darle acceso a ese elemento, aunque esté en el vector. `Insertar` es `O(1)`, ya que reemplazamos aquellos que borramos, y siempre que agregamos, no tenemos que mover nada a ningún lado, no como insertar al inicio, ya que, si no habia lugar a "izquierda" (en direccion al inicio), se demen mover los elementos a la derecha.
 
-`Insertar/obtener/eliminar al medio:`  
-Aquí es distinto, insertar en el medio, porque, aunque sea directo darle la posicion donde quiero agegar, debo mover a la derecha para darle espacio a mi nuevo elemento. Obtener seria O(1), y eliminar sería O(n), ya que debo hacer que el lado derecho, vaya para la izquierda y "rellenar" ese bloque.  
+` -Insertar/obtener/eliminar al medio:`  
+Aquí es distinto, `insertar` en el medio, porque, aunque sea directo darle la posicion donde quiero agegar, debo mover a la derecha para darle espacio a mi nuevo elemento eso es `O(n)`. `Obtener` es `O(1)`, ya que es directo. `Eliminar` es `O(n)`, ya que debo hacer que el lado derecho, vaya para la izquierda y "rellenar" ese bloque.  
 
  ## Explica la complejidad de las operaciones implementadas en tu trabajo para la pila y la cola.  
 
