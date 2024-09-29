@@ -124,10 +124,8 @@ Teniendo la lógica de que, se puede ingresar elementos en cualquier posición d
 </div>
 
  ## Explica y analiza las diferencias de complejidad entre las implementaciones de lista simplemente enlazada, doblemente enlazada y vector dinámico para las operaciones  
- 
- Mencionar que para mis complejidades, sabré la cantidad de elementos en las listas:  
 
-###1) lista simplemente enlazada:  
+### 1) lista simplemente enlazada:  
 Una lista simplemente enlazada, en su estructura interna de nodos, habrá solo una dirección para recorrer la lista. El caso general es cuando el direccionamiento de los nodos va de inicio a final.
 
 `Insertar/obtener/eliminar al inicio:`  
@@ -139,7 +137,7 @@ Insertar un elemento al final, dependiendo como sea la estructura de la lista, p
 `Insertar/obtener/eliminar al medio:`  
 Insertar al medio: Con cualquiera de las 2 posibles estructuras de una lista, conociendo el puntero al final d ela lista, la manera de agregar, buscar y eliminar un elemento, será O(n), porque vamos a tener que recorrer la lista.  
 
-###2) Lista doblemente enlazada:  
+### 2) Lista doblemente enlazada:  
 En esta implementación, cada nodo tendrá doble direccionamiento, tanto al siguiente nodo como al nodo anterior.  
 
 `Insertar/obtener/eliminar al inicio:`  
@@ -151,7 +149,7 @@ Aquí sí cambia con el anterior, primero mencionar que insertar sigue siendo O(
 `Insertar/obtener/eliminar al medio:`  
 Insertar, buscar y eliminar al medio, siguen siendo O(n), ya que debemos iterar.  
 
-###3) Vector dinámico:  
+### 3) Vector dinámico:  
 Al ser un vector, tiene memoria contigua, sabremos las posiciones, aparte de saber la cantidad de elementos, en esta estructura, deseo decir que, aparte de conocer la cantidad de elementos, tambien deseo saber donde inicia mi vector.  
 
 `Insertar/obtener/eliminar al inicio:`
